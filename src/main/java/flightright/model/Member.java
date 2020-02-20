@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
@@ -23,24 +25,31 @@ import lombok.NoArgsConstructor;
 public class Member {
 
 	@Id
-@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-/*	@Valid
-	@NotEmpty*/
-	
+
+	@Pattern(regexp = "[a-zA-Z]+", message="Name can only be letters")
+    @Size(min = 1, max = 30)
+	@Valid
+	@NotEmpty
 	@Column
 	String firstName;
-/*
-	@NotEmpty
-*/
-	//String lastName;
-/*
-	@NotNull
-	 @Past
-	 @JsonFormat(pattern="yyyy-mm-dd")
-	private Date dateOfBirth;
 
-	private String PostalCode;*/
+	@Pattern(regexp = "[a-zA-Z]+", message="Name can only be letters")
+    @Size(min = 1, max = 30)
+	@Valid
+	@NotEmpty
+	String lastName;
+
+	@Valid
+	@NotNull
+	@Past
+	@JsonFormat(pattern = "yyyy-mm-dd")
+	private Date dateOfBirth;
+	
+	@Pattern(regexp = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$", message="Invalid UK postcode")
+	@Valid
+	@NotNull
+	private String postalCode;
 
 }
