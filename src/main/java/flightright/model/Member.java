@@ -28,15 +28,15 @@ public class Member {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Pattern(regexp = "[a-zA-Z]+", message="Name can only be letters")
-    @Size(min = 1, max = 30)
+	@Pattern(regexp = "[a-zA-Z]+", message = "Name can only be letters")
+	@Size(min = 1, max = 30)
 	@Valid
 	@NotEmpty
 	@Column
 	String firstName;
 
-	@Pattern(regexp = "[a-zA-Z]+", message="Name can only be letters")
-    @Size(min = 1, max = 30)
+	@Pattern(regexp = "[a-zA-Z]+", message = "Name can only be letters")
+	@Size(min = 1, max = 30)
 	@Valid
 	@NotEmpty
 	String lastName;
@@ -46,8 +46,8 @@ public class Member {
 	@Past
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date dateOfBirth;
-	
-	@Pattern(regexp = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$", message="Invalid UK postcode")
+
+	@Pattern(regexp = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$", message = "Invalid UK postcode")
 	@Valid
 	@NotNull
 	private String postalCode;
