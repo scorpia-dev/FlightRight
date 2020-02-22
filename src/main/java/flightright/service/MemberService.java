@@ -1,8 +1,8 @@
 package flightright.service;
 
 import java.util.List;
-import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import flightright.model.Member;
 import flightright.repository.MemberRepository;
-import flightright.exceptions.Exception.*;
 
 @Service
 public class MemberService {
@@ -28,25 +27,16 @@ public class MemberService {
 		return memberRepository.findAll();
 	}
 
-	public Optional<Member> getMember(@Valid Long id) {
-		Optional<Member> member = memberValidation(id);
-		return member;
-	}
+	public Member getMember(@Valid Long id) {
 
-	public Optional<Member> memberValidation(Long id) {
-		Optional<Member> member = memberRepository.findById(id);
-		if (id < 1) {
-			throw new ValidationException("The id can not be less than 1");
-		}
-		if (!member.isPresent()) {
-			throw new NotFoundException("The id: " + id + " does not exist");
-		}
-		return member;
+		return memberRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found"));
 	}
 
 	public Member updateMember(Member updatedMember, Long id) {
 
-		Member originalMember = memberRepository.getOne(id);
+		Member originalMember = memberRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found"));
 
 		BeanUtils.copyProperties(originalMember, updatedMember);
 
@@ -54,9 +44,10 @@ public class MemberService {
 	}
 
 	public String deleteMember(@Valid Long id) {
-		Member member = memberRepository.getOne(id);
-		memberRepository.delete(member);
-		return "member with id " +id+ " deleted";
-	}
 
+		memberRepository.delete(memberRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found")));
+
+		return "Member with id " +id+ " deleted";
+	}
 }

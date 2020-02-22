@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class Member {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -51,4 +51,11 @@ public class Member {
 	@NotNull
 	private String postalCode;
 
+	public Member (String firstName, String lastName, Date dateOfBirth, String postalCode) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dateOfBirth = dateOfBirth;
+		this.postalCode = postalCode;
+	}
+	
 }
