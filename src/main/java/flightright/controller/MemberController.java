@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,12 +30,12 @@ public class MemberController {
 	}
 
 	@PutMapping("/members/{id}")
-	public Member updateMember(@PathVariable("id") Long id, @RequestBody Member member) {
+	public Member updateMember(@Valid @Positive @PathVariable("id") Long id, @RequestBody Member member) {
 		return memberService.updateMember(member, id);
 	}
 
 	@GetMapping("/members/{id}")
-	public Optional<Member> getMember(@Valid @PathVariable Long id) {
+	public Optional<Member> getMember(@Valid @PathVariable @Positive Long id) {
 		return memberService.getMember(id);
 	}
 
@@ -44,7 +45,7 @@ public class MemberController {
 	}
 	
 	@DeleteMapping("/members/{id}")
-	public String deleteMember(@Valid @PathVariable Long id) {
+	public String deleteMember(@Valid @Positive @PathVariable Long id) {
 		return memberService.deleteMember(id);
 	}
 

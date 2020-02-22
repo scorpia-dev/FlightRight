@@ -29,16 +29,15 @@ public class Member {
 	private Long id;
 
 	@Pattern(regexp = "[a-zA-Z]+", message = "Name can only be letters")
-	@Size(min = 1, max = 30)
-	@Valid
+	@Size(min = 2, max = 30)
 	@NotEmpty
+	@Valid
 	@Column
 	String firstName;
 
 	@Pattern(regexp = "[a-zA-Z]+", message = "Name can only be letters")
 	@Size(min = 1, max = 30)
 	@Valid
-	@NotEmpty
 	String lastName;
 
 	@Valid
