@@ -29,13 +29,11 @@ public class MemberService {
 	}
 
 	public Member getMember(Long id) {
-
 		return memberRepository.findById(id).orElseThrow(
 				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found"));
 	}
 
 	public Member updateMember(Member updatedMember, Long id) {
-
 		Member originalMember = memberRepository.findById(id).orElseThrow(
 				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found"));
 
@@ -45,7 +43,6 @@ public class MemberService {
 	}
 
 	public String deleteMember(@Valid Long id) {
-
 		memberRepository.delete(memberRepository.findById(id).orElseThrow(
 				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found")));
 
