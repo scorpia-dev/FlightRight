@@ -2,7 +2,6 @@ package flightright;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -13,20 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.constraints.Positive;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +26,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heaven.hrapp.exceptions.Exception.NotFoundException;
 
 import flightright.model.Member;
 import flightright.service.MemberService;
@@ -56,15 +43,6 @@ import flightright.service.MemberService;
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MemberControllerTest {
-
-	private Validator validator;
-
-	@BeforeEach
-	public void setUp() {
-
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		validator = factory.getValidator();
-	}
 
 	@Autowired
 	private MockMvc mvc;
@@ -148,7 +126,6 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("SA14 9AS"));
 
 			assertTrue(memberService.getMember(1L) == member);
-
 	}
 
 	@Transactional
@@ -190,7 +167,6 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$[2].postalCode").value("IP1 9XJ"));
 
 		assertTrue(memberService.getAllMembers().size() == 3);
-
 	}
 
 	@Transactional
@@ -210,24 +186,5 @@ public class MemberControllerTest {
 		assertTrue(thrown.getMessage().contains("the member with id 1 was not found"));
 	}
 
-	/*
-	 * @Test public void futureDobTest() throws Exception {
-	 * 
-	 * String sDate = "2025-09-21"; Date dob = formatter.parse(sDate); Member member
-	 * = new Member("Nick", "Prendergast", dob, "NR14 7TP");
-	 * 
-	 * Set<ConstraintViolation<Member>> violations = validator.validate(member);
-	 * assertEquals("must be a past date",
-	 * violations.iterator().next().getMessage()); }
-	 * 
-	 * @Test public void invaidFirstNameTest() throws Exception { Member member =
-	 * new Member(); member.setFirstName("123223+!");
-	 * 
-	 * Set<ConstraintViolation<Member>> violations1 = validator.validate(member);
-	 * assertEquals("Name can only be letters",
-	 * violations1.iterator().next().getMessage());
-	 * 
-	 * }
-	 */
 
 }
