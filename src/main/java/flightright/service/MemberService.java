@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class MemberService {
 		return memberRepository.findAll();
 	}
 
-	public Member getMember(@Valid Long id) {
+	public Member getMember(Long id) {
 
 		return memberRepository.findById(id).orElseThrow(
 				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found"));
