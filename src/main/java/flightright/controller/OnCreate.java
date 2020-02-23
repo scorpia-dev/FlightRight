@@ -13,5 +13,4 @@ public interface OnCreate extends Default {
 
 	@PostMapping("/members")
 	public Member createMember(@Validated @RequestBody @Valid Member member);
-
 }

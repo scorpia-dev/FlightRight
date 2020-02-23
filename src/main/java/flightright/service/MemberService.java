@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -22,7 +21,7 @@ public class MemberService {
 	@Autowired
 	MemberRepository memberRepository;
 
-	public Member createMember(@Valid Member member) {
+	public Member createMember(Member member) {
 		return memberRepository.save(member);
 	}
 
@@ -43,7 +42,7 @@ public class MemberService {
 		return memberRepository.save(originalMember);
 	}
 
-	public static String[] getNullPropertyNames(Object source) {
+	private String[] getNullPropertyNames(Object source) {
 		final BeanWrapper src = new BeanWrapperImpl(source);
 		java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
@@ -57,7 +56,7 @@ public class MemberService {
 		return emptyNames.toArray(result);
 	}
 
-	public String deleteMember(@Valid Long id) {
+	public String deleteMember(Long id) {
 		memberRepository.delete(memberRepository.findById(id).orElseThrow(
 				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found")));
 		return "Member with id " + id + " deleted";

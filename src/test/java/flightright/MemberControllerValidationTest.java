@@ -43,7 +43,7 @@ public class MemberControllerValidationTest {
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
 
 	@Test
-	public void createMemberInvalidRequestBody() throws Exception {
+	public void createMemberNoPostCodeTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
 
@@ -59,6 +59,38 @@ public class MemberControllerValidationTest {
 						containsString("not valid due to validation error: postalCode: Postal code can not be empty")));
 	}
 
+	@Test
+	public void createMemberNoLastNameTest() throws Exception {
+		String sDate = "1993-09-21";
+		Date dob = formatter.parse(sDate);
+
+		Member member = new Member();
+		member.setFirstName("Nick");
+		member.setDateOfBirth(dob);
+		member.setPostalCode("NR14 7TP");
+		String json = objectMapper.writeValueAsString(member);
+
+		mvc.perform(post("/members").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.content(json)).andExpect(status().isBadRequest()).andDo(print())
+				.andExpect(content().string(
+						containsString("not valid due to validation error: lastName: Last name can not be empty")));
+	}
+	
+	@Test
+	public void createMemberNoDobTest() throws Exception {
+		Member member = new Member();
+		member.setFirstName("Nick");
+		member.setLastName("Prendergast");
+		member.setPostalCode("NR14 7TP");
+
+		String json = objectMapper.writeValueAsString(member);
+
+		mvc.perform(post("/members").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.content(json)).andExpect(status().isBadRequest()).andDo(print())
+				.andExpect(content().string(
+						containsString("not valid due to validation error: dateOfBirth: Date of birth can not be empty")));
+	}
+	
 	@Test
 	public void deleteMemberNegativeIdTest() throws Exception {
 		mvc.perform(delete("/members/{id}", -1L).contentType(MediaType.APPLICATION_JSON))
@@ -122,7 +154,6 @@ public class MemberControllerValidationTest {
 
 	@Test
 	public void getMemberNegativeIdTest() throws Exception {
-
 		mvc.perform(
 				get("/members/{id}", -1L).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError()).andDo(print()).andExpect(content().string(containsString(
@@ -131,7 +162,6 @@ public class MemberControllerValidationTest {
 
 	@Test
 	public void getMemberIdDoesNotExist() throws Exception {
-
 		mvc.perform(get("/members/{id}", 3L).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError()).andDo(print()).andExpect(content().string(
 						containsString("not valid due to validation error: the member with id 3 was not found")));
@@ -139,7 +169,6 @@ public class MemberControllerValidationTest {
 
 	@Test
 	public void getMemberIdInvalidType() throws Exception {
-
 		mvc.perform(get("/members/{id}", "String").contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest()).andDo(print())
 				.andExpect(content().string(

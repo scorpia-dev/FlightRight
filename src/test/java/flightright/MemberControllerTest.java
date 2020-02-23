@@ -82,7 +82,7 @@ public class MemberControllerTest {
 
 	@Transactional
 	@Test
-	public void updateMemberTest() throws Exception {
+	public void updateMemberAllFieldsTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
 		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
@@ -111,6 +111,37 @@ public class MemberControllerTest {
 		assertThat(newMember.getLastName().equals("Jones"));
 		assertThat(newMember.getDateOfBirth().equals(dob));
 		assertThat(newMember.getPostalCode().equals("NR11 1BD"));
+	}
+	
+	@Transactional
+	@Test
+	public void partialUpdateMemberTest() throws Exception {
+		String sDate = "1993-09-21";
+		Date dob = formatter.parse(sDate);
+		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
+		memberService.createMember(member);
+
+		Long id = member.getId();
+
+		Member savedMember = new Member();
+		savedMember.setFirstName("Tom");
+
+		String json = objectMapper.writeValueAsString(savedMember);
+
+		mvc.perform(put("/members/{id}", id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.content(json)).andExpect(status().isOk()).andDo(print())
+				.andExpect(MockMvcResultMatchers.jsonPath("id").value(1))
+				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Tom"))
+				.andExpect(MockMvcResultMatchers.jsonPath("lastName").value("Prendergast"))
+				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1993-09-21"))
+				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR14 7TP"));
+
+		Member newMember = memberService.getMember(1L);
+		assertThat(newMember.getId().equals(1L));
+		assertThat(newMember.getFirstName().equals("Tom"));
+		assertThat(newMember.getLastName().equals("Jones"));
+		assertThat(newMember.getDateOfBirth().equals(dob));
+		assertThat(newMember.getPostalCode().equals("NR14 7TP"));
 	}
 
 	@Transactional

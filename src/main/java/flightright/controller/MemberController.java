@@ -26,7 +26,7 @@ public class MemberController implements OnCreate {
 	MemberService memberService;
 
 	@PostMapping("/members")
-	public Member createMember(@Validated({ OnCreate.class }) @RequestBody Member member) {
+	public Member createMember(@Validated({ OnCreate.class }) @RequestBody  Member member) {
 		return memberService.createMember(member);
 	}
 
