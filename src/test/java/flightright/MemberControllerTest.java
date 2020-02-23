@@ -86,15 +86,18 @@ public class MemberControllerTest {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
 		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
-		Member savedMember = memberService.createMember(member);
+		memberService.createMember(member);
 
-		Long id = savedMember.getId();
+		Long id = member.getId();
+
+		Member savedMember = new Member();
 		savedMember.setFirstName("Tom");
 		savedMember.setLastName("Jones");
-		savedMember.setPostalCode("NR1 1BD");
+		savedMember.setPostalCode("NR1 1BD");		
+		savedMember.setDateOfBirth(dob);
 		String json = objectMapper.writeValueAsString(savedMember);
 
-		mvc.perform(put("/members/{id}", id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+		mvc.perform(put("/members/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.content(json)).andExpect(status().isOk()).andDo(print())
 				.andExpect(MockMvcResultMatchers.jsonPath("id").value(1))
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Tom"))

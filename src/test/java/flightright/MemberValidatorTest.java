@@ -15,8 +15,12 @@ import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import flightright.model.Member;
@@ -40,8 +44,7 @@ public class MemberValidatorTest {
 	public void futureDobTest() throws Exception {
 		String sDate = "2025-09-09";
 		Date dob = formatter.parse(sDate);
-		Member member = new Member();
-		member.setDateOfBirth(dob);
+		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
 
 		Set<ConstraintViolation<Member>> violations = validator.validate(member);
 		assertEquals("must be a past date", violations.iterator().next().getMessage());
@@ -49,8 +52,9 @@ public class MemberValidatorTest {
 	
 	@Test
 	public void nonLettersInFirstNameTest() throws Exception {
-		Member member = new Member();
-		member.setFirstName("123223+!");
+		String sDate = "2015-09-09";
+		Date dob = formatter.parse(sDate);
+		Member member = new Member("123223+!", "Prendergast", dob, "NR14 7TP");
 
 		Set<ConstraintViolation<Member>> violations = validator.validate(member);
 		assertEquals("a name can only contain letters", violations.iterator().next().getMessage());
@@ -58,8 +62,10 @@ public class MemberValidatorTest {
 	
 	@Test
 	public void firstNameTooLongTest() throws Exception {
-		Member member = new Member();
-		member.setFirstName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		String sDate = "2010-09-09";
+		Date dob = formatter.parse(sDate);
+		String firstName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+		Member member = new Member(firstName, "Prendergast", dob, "NR14 7TP");
 
 		Set<ConstraintViolation<Member>> violations = validator.validate(member);
 		assertEquals("size must be between 1 and 30", violations.iterator().next().getMessage());
@@ -76,8 +82,10 @@ public class MemberValidatorTest {
 	
 	@Test
 	public void nonLettersInLastNameTest() throws Exception {
-		Member member = new Member();
-		member.setLastName("123223+!");
+		String sDate = "2015-09-09";
+		Date dob = formatter.parse(sDate);
+		String lastName = "123223+!";
+		Member member = new Member("Nick", lastName, dob, "NR14 7TP");
 
 		Set<ConstraintViolation<Member>> violations = validator.validate(member);
 		assertEquals("a name can only contain letters", violations.iterator().next().getMessage());
@@ -88,8 +96,8 @@ public class MemberValidatorTest {
 		Member member = new Member();
 		member.setLastName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
-		Set<ConstraintViolation<Member>> violations = validator.validate(member);
-		assertEquals("size must be between 1 and 30", violations.iterator().next().getMessage());
+		Set<ConstraintViolation<Member>> violations3 = validator.validate(member);
+		assertEquals("size must be between 1 and 30", violations3.iterator().next().getMessage());
 	}
 	
 	@Test
@@ -114,14 +122,18 @@ public class MemberValidatorTest {
 	
 	@Test
 	public void invalidPostCodeTest() throws Exception {
-		Member member1 = new Member();
-		member1.setPostalCode("aaa");
+		String sDate = "1995-09-09";
+		Date dob = formatter.parse(sDate);
+		String invalidPostCode = "AAAA";
+		Member member1 = new Member("Nick", "Prendergast", dob, invalidPostCode);
+
 		Set<ConstraintViolation<Member>> violations1 = validator.validate(member1);
 		assertEquals("Invalid UK postcode", violations1.iterator().next().getMessage());
-		
-		Member member2= new Member();
-		member2.setPostalCode("1233223232321");
-		Set<ConstraintViolation<Member>> violations2 = validator.validate(member2);
+	
+		String invalidPostCode2 = "1233223232321";
+		Member member2 = new Member("Nick", "Prendergast", dob, invalidPostCode2);
+
+		Set<ConstraintViolation<Member>> violations2= validator.validate(member2);
 		assertEquals("Invalid UK postcode", violations2.iterator().next().getMessage());
 	}
 

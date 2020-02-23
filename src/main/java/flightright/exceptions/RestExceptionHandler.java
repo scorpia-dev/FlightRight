@@ -6,10 +6,10 @@ import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
@@ -39,10 +39,10 @@ public class RestExceptionHandler {
 	    return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
 	  }
 
-/*	  @ExceptionHandler(HttpMessageNotReadableException.class)
-	  public ResponseEntity<ErrorResponse> handleMessageNotReadableException(Exception ex, WebRequest request) {
-	    // some handling
-	    return generateExceptionResponseEntity(errorMessage, status);
-	  }*/
+	  @ExceptionHandler(MethodArgumentNotValidException.class)
+	  @ResponseStatus(HttpStatus.BAD_REQUEST)
+	  ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+	    return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+	  }
 	  
 }

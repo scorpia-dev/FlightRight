@@ -20,11 +20,12 @@ import flightright.service.MemberService;
 
 @RestController
 @Validated
-public class MemberController {
+public class MemberController implements OnCreate {
 
 	@Autowired
 	MemberService memberService;
 
+	
 	@PostMapping("/members")
 	public Member createMember(@RequestBody @Valid Member member) {
 		return memberService.createMember(member);

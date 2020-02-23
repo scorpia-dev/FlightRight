@@ -48,13 +48,13 @@ public class MemberControllerValidationTest {
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
 
 
-	//@Test
+	@Test
 	public void deleteMemberNegativeIdTest() throws Exception {
 		mvc.perform(delete("/members/{id}", -1L).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError())
 		.andDo(print()).andExpect(content().string(containsString("not valid due to validation error: deleteMember.id: must be greater than 0")));
 	}
 	
-	//@Test
+	@Test
 	public void deleteMemberInvalidIdTest() throws Exception {
 		mvc.perform(delete("/members/{id}", 3L).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError())
 		.andDo(print()).andExpect(content().string(containsString("not valid due to validation error: the member with id 3 was not found")));
@@ -65,10 +65,10 @@ public class MemberControllerValidationTest {
 		String invalidType = "abc";
 		
 		mvc.perform(delete("/members/{id}", invalidType).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
-		.andDo(print()).andExpect(content().string(containsString("")));
+		.andDo(print()).andExpect(content().string(containsString("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: \"abc\"")));
 	}
 	
-	//@Test
+	@Test
 	public void updateMemberInvalidIdTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
@@ -80,7 +80,7 @@ public class MemberControllerValidationTest {
 		.andExpect(content().string(containsString("not valid due to validation error: the member with id 3 was not found")));
 	}
 	
-	//@Test
+	@Test
 	public void updateMemberNegativeIdTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
@@ -92,7 +92,7 @@ public class MemberControllerValidationTest {
 		.andExpect(content().string(containsString("not valid due to validation error: updateMember.id: must be greater than 0")));
 	}
 	
-	//@Test
+	@Test
 	public void updateMemberInvalidRequestBodyTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
@@ -103,24 +103,5 @@ public class MemberControllerValidationTest {
 		mvc.perform(put("/members/{id}", id).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
 		.andDo(print()).andExpect(content().string(containsString("not valid due to validation error: Required request body is missing: public flightright.model.Member flightright.controller.MemberController.updateMember(java.lang.Long,flightright.model.Member")));
 	}
-	
-
-/*	
- * 
- * 	@PutMapping("/members/{id}")
-	public Member updateMember(@PathVariable @Positive Long id, @RequestBody @Valid Member member) {
-		return memberService.updateMember(member, id);
-	}
-	@Test
-	public void deleteMemberNegativeIdTest() throws Exception {
-		mvc.perform(delete("/members/{id}", -1L).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError())
-		.andDo(print()).andExpect(content().string(containsString("not valid due to validation error: deleteMember.id: must be greater than 0")));
-	}
-	
-	@Test
-	public void deleteMemberNegativeIdTest() throws Exception {
-		mvc.perform(delete("/members/{id}", -1L).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError())
-		.andDo(print()).andExpect(content().string(containsString("not valid due to validation error: deleteMember.id: must be greater than 0")));
-	}*/
 			
 }
