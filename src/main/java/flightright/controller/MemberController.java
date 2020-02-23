@@ -25,9 +25,8 @@ public class MemberController implements OnCreate {
 	@Autowired
 	MemberService memberService;
 
-	
 	@PostMapping("/members")
-	public Member createMember(@RequestBody @Valid Member member) {
+	public Member createMember(@Validated({ OnCreate.class }) @RequestBody Member member) {
 		return memberService.createMember(member);
 	}
 
@@ -45,10 +44,10 @@ public class MemberController implements OnCreate {
 	public List<Member> listExistingMembers() {
 		return memberService.getAllMembers();
 	}
-	
+
 	@DeleteMapping("/members/{id}")
 	public String deleteMember(@PathVariable @Positive Long id) {
 		return memberService.deleteMember(id);
 	}
-	
+
 }

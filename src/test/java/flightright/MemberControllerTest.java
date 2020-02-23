@@ -93,11 +93,11 @@ public class MemberControllerTest {
 		Member savedMember = new Member();
 		savedMember.setFirstName("Tom");
 		savedMember.setLastName("Jones");
-		savedMember.setPostalCode("NR1 1BD");		
+		savedMember.setPostalCode("NR1 1BD");
 		savedMember.setDateOfBirth(dob);
 		String json = objectMapper.writeValueAsString(savedMember);
 
-		mvc.perform(put("/members/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+		mvc.perform(put("/members/{id}", id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.content(json)).andExpect(status().isOk()).andDo(print())
 				.andExpect(MockMvcResultMatchers.jsonPath("id").value(1))
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Tom"))
@@ -128,7 +128,7 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1973-09-21"))
 				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("SA14 9AS"));
 
-			assertTrue(memberService.getMember(1L) == member);
+		assertTrue(memberService.getMember(1L) == member);
 	}
 
 	@Transactional
@@ -184,10 +184,9 @@ public class MemberControllerTest {
 				.andDo(print()).andExpect(content().string(containsString("Member with id 1 deleted")));
 
 		assertTrue(memberService.getAllMembers().isEmpty());
-		
+
 		EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> memberService.getMember(1L));
 		assertTrue(thrown.getMessage().contains("the member with id 1 was not found"));
 	}
-
 
 }
