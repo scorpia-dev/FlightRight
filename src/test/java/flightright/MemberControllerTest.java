@@ -12,12 +12,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -55,22 +58,35 @@ public class MemberControllerTest {
 
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
 
+/*	@Rule
+    TemporaryFolder folder = new TemporaryFolder();*/
+
+	
 	@Transactional
 	@Test
 	public void createMemberTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
-		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
+
+		File file = File.createTempFile( "some-prefix", ".jpg");
+        file.deleteOnExit();
+
+		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP", file);
+		file.toString();
 
 		String json = objectMapper.writeValueAsString(member);
 
 		mvc.perform(post("/members").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-				.content(json)).andExpect(status().isOk()).andDo(print())
+				.content(json))
+		
+		.andExpect(status().isOk()).andDo(print())
 				.andExpect(MockMvcResultMatchers.jsonPath("id").value(1))
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Nick"))
 				.andExpect(MockMvcResultMatchers.jsonPath("lastName").value("Prendergast"))
 				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1993-09-21"))
-				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR14 7TP"));
+				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR14 7TP"))
+				.andExpect(MockMvcResultMatchers.jsonPath("picture").value(file.toString()));
+
 
 		Member newMember = memberService.getMember(1L);
 		assertThat(newMember.getId().equals(1L));

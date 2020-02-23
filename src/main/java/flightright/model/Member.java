@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import flightright.controller.OnCreate;
+import flightright.validation.FileValidatorConstraint;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -53,13 +54,16 @@ public class Member {
 	@NotEmpty(groups = OnCreate.class, message = "{postalCode.notEmpty}")
 	private String postalCode;
 	
-	//File png;
+	@FileValidatorConstraint
+	//@NotEmpty(groups = OnCreate.class, message = "{picture.notEmpty}")
+	private File picture;
 
-	public Member(String firstName, String lastName, Date dateOfBirth, String postalCode) {
+	public Member(String firstName, String lastName, Date dateOfBirth, String postalCode, File picture) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.dateOfBirth = dateOfBirth;
 		this.postalCode = postalCode;
+		this.picture = picture;
 	}
 
 }
