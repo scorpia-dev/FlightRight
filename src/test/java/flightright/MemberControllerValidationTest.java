@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -46,11 +47,14 @@ public class MemberControllerValidationTest {
 	public void createMemberNoPostCodeTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
+		File file = File.createTempFile( "image", ".jpg");
 
+		
 		Member member = new Member();
 		member.setFirstName("Nick");
 		member.setLastName("Prendergast");
 		member.setDateOfBirth(dob);
+		member.setPicture(file);
 		String json = objectMapper.writeValueAsString(member);
 
 		mvc.perform(post("/members").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
@@ -63,11 +67,14 @@ public class MemberControllerValidationTest {
 	public void createMemberNoLastNameTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
+		File file = File.createTempFile( "image", ".jpg");
 
 		Member member = new Member();
 		member.setFirstName("Nick");
 		member.setDateOfBirth(dob);
 		member.setPostalCode("NR14 7TP");
+		member.setPicture(file);
+
 		String json = objectMapper.writeValueAsString(member);
 
 		mvc.perform(post("/members").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
@@ -79,6 +86,28 @@ public class MemberControllerValidationTest {
 	@Test
 	public void createMemberNoDobTest() throws Exception {
 		Member member = new Member();
+		File file = File.createTempFile( "image", ".jpg");
+
+		member.setFirstName("Nick");
+		member.setLastName("Prendergast");
+		member.setPostalCode("NR14 7TP");
+		member.setPicture(file);
+
+		String json = objectMapper.writeValueAsString(member);
+
+		mvc.perform(post("/members").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.content(json)).andExpect(status().isBadRequest()).andDo(print())
+				.andExpect(content().string(
+						containsString("not valid due to validation error: dateOfBirth: Date of birth can not be empty")));
+	}
+	
+	@Test
+	public void createMemberNoFileTest() throws Exception {
+		Member member = new Member();
+		String sDate = "1993-09-21";
+		Date dob = formatter.parse(sDate);
+
+		member.setDateOfBirth(dob);
 		member.setFirstName("Nick");
 		member.setLastName("Prendergast");
 		member.setPostalCode("NR14 7TP");
@@ -88,7 +117,7 @@ public class MemberControllerValidationTest {
 		mvc.perform(post("/members").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.content(json)).andExpect(status().isBadRequest()).andDo(print())
 				.andExpect(content().string(
-						containsString("not valid due to validation error: dateOfBirth: Date of birth can not be empty")));
+						containsString("must contain a picture file")));
 	}
 	
 	@Test
@@ -117,7 +146,9 @@ public class MemberControllerValidationTest {
 	public void updateMemberInvalidIdTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
-		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
+		File file = File.createTempFile( "image", ".jpg");
+
+		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP", file);
 		String json = objectMapper.writeValueAsString(member);
 
 		mvc.perform(put("/members/{id}", 3L).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
@@ -130,7 +161,9 @@ public class MemberControllerValidationTest {
 	public void updateMemberNegativeIdTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
-		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
+		File file = File.createTempFile( "image", ".jpg");
+
+		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP", file);
 		String json = objectMapper.writeValueAsString(member);
 
 		mvc.perform(put("/members/{id}", -1L).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
@@ -143,7 +176,9 @@ public class MemberControllerValidationTest {
 	public void updateMemberEmptyRequestBodyTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
-		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
+		File file = File.createTempFile( "image", ".jpg");
+
+		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP", file);
 		Member savedMember = memberService.createMember(member);
 		Long id = savedMember.getId();
 

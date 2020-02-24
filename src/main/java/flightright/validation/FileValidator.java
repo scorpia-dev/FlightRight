@@ -14,11 +14,22 @@ ConstraintValidator<FileValidatorConstraint, File> {
 
 @Override
 public boolean isValid(File file, ConstraintValidatorContext context) {
-/*	        String filepath = value;
-	        File f = new File(filepath);*/
-	        String mimetype= new MimetypesFileTypeMap().getContentType(file);
-	        String type = mimetype.split("/")[0];
-	        if(type.equals("image")) {
+	
+			if (file == null) {
+				return true;
+			}
+			
+/*            MimetypesFileTypeMap mftp = new MimetypesFileTypeMap();
+            mftp.addMimeTypes("image png jpg jpeg");
+            String mimeType = mftp.getContentType(file).split("/")[0];
+            result = mimeType.equals("image");
+            */
+            
+			MimetypesFileTypeMap mtftp = new MimetypesFileTypeMap();
+			mtftp.addMimeTypes("image png jpg jpeg");
+			
+	        String mimetype=  mtftp.getContentType(file).split("/")[0];
+	        if(mimetype.equals("image")) {
 	        return true;
 	        }
 	        else {

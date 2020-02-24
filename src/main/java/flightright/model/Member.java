@@ -54,8 +54,8 @@ public class Member {
 	@NotEmpty(groups = OnCreate.class, message = "{postalCode.notEmpty}")
 	private String postalCode;
 	
+	@NotNull(groups = OnCreate.class, message = "{picture.notEmpty}")
 	@FileValidatorConstraint
-	//@NotEmpty(groups = OnCreate.class, message = "{picture.notEmpty}")
 	private File picture;
 
 	public Member(String firstName, String lastName, Date dateOfBirth, String postalCode, File picture) {

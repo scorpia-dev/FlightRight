@@ -57,22 +57,15 @@ public class MemberControllerTest {
 	ObjectMapper objectMapper;
 
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
-
-/*	@Rule
-    TemporaryFolder folder = new TemporaryFolder();*/
-
 	
 	@Transactional
 	@Test
 	public void createMemberTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
-
-		File file = File.createTempFile( "some-prefix", ".jpg");
-        file.deleteOnExit();
-
+		File file = File.createTempFile( "image", ".jpg");
+		
 		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP", file);
-		file.toString();
 
 		String json = objectMapper.writeValueAsString(member);
 
@@ -94,39 +87,53 @@ public class MemberControllerTest {
 		assertThat(newMember.getLastName().equals("Prendergast"));
 		assertThat(newMember.getDateOfBirth().equals(dob));
 		assertThat(newMember.getPostalCode().equals("NR14 7TP"));
+		assertThat(newMember.getPicture().equals(file));
+
 	}
 
 	@Transactional
 	@Test
 	public void updateMemberAllFieldsTest() throws Exception {
-		String sDate = "1993-09-21";
-		Date dob = formatter.parse(sDate);
-		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
+		String sDate1 = "1993-09-21";
+		Date dob1 = formatter.parse(sDate1);
+		String sDate2 = "1990-02-03";
+		Date dob2 = formatter.parse(sDate2);
+		File file1 = File.createTempFile( "image", ".jpg");
+		File file2 = File.createTempFile( "image", ".jpg");
+
+		
+		Member member = new Member("Nick", "Prendergast", dob1, "NR14 7TP", file1);
 		memberService.createMember(member);
 
 		Long id = member.getId();
 
-		Member savedMember = new Member();
-		savedMember.setFirstName("Tom");
-		savedMember.setLastName("Jones");
-		savedMember.setPostalCode("NR1 1BD");
-		savedMember.setDateOfBirth(dob);
-		String json = objectMapper.writeValueAsString(savedMember);
+
+		Member updatedMember = new Member();
+		updatedMember.setFirstName("Tom");
+		updatedMember.setLastName("Jones");
+		updatedMember.setPostalCode("NR1 1BD");
+		updatedMember.setDateOfBirth(dob2);
+		updatedMember.setPicture(file2);
+		String json = objectMapper.writeValueAsString(updatedMember);
 
 		mvc.perform(put("/members/{id}", id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.content(json)).andExpect(status().isOk()).andDo(print())
 				.andExpect(MockMvcResultMatchers.jsonPath("id").value(1))
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Tom"))
 				.andExpect(MockMvcResultMatchers.jsonPath("lastName").value("Jones"))
-				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1993-09-21"))
-				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR1 1BD"));
+				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1990-02-03"))
+				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR1 1BD"))
+				.andExpect(MockMvcResultMatchers.jsonPath("picture").value(file2.toString()));
 
-		Member newMember = memberService.getMember(1L);
-		assertThat(newMember.getId().equals(1L));
-		assertThat(newMember.getFirstName().equals("Tom"));
-		assertThat(newMember.getLastName().equals("Jones"));
-		assertThat(newMember.getDateOfBirth().equals(dob));
-		assertThat(newMember.getPostalCode().equals("NR11 1BD"));
+
+		Member afterSaveUpdatedMember = memberService.getMember(1L);
+		assertThat(afterSaveUpdatedMember.getId().equals(id));
+		assertThat(afterSaveUpdatedMember.getFirstName().equals("Tom"));
+		assertThat(afterSaveUpdatedMember.getLastName().equals("Jones"));
+		assertThat(afterSaveUpdatedMember.getDateOfBirth().equals(dob2));
+		assertThat(afterSaveUpdatedMember.getPostalCode().equals("NR11 1BD"));
+		assertThat(afterSaveUpdatedMember.getPicture().equals(file2));
+
 	}
 	
 	@Transactional
@@ -134,7 +141,8 @@ public class MemberControllerTest {
 	public void partialUpdateMemberTest() throws Exception {
 		String sDate = "1993-09-21";
 		Date dob = formatter.parse(sDate);
-		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP");
+		File file = File.createTempFile( "image", ".jpg");
+		Member member = new Member("Nick", "Prendergast", dob, "NR14 7TP", file);
 		memberService.createMember(member);
 
 		Long id = member.getId();
@@ -150,14 +158,19 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Tom"))
 				.andExpect(MockMvcResultMatchers.jsonPath("lastName").value("Prendergast"))
 				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1993-09-21"))
-				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR14 7TP"));
+				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR14 7TP"))
+				.andExpect(MockMvcResultMatchers.jsonPath("picture").value(file.toString()));
 
-		Member newMember = memberService.getMember(1L);
-		assertThat(newMember.getId().equals(1L));
-		assertThat(newMember.getFirstName().equals("Tom"));
-		assertThat(newMember.getLastName().equals("Jones"));
-		assertThat(newMember.getDateOfBirth().equals(dob));
-		assertThat(newMember.getPostalCode().equals("NR14 7TP"));
+
+		Member updatedMember = memberService.getMember(1L);
+		assertThat(updatedMember.getId().equals(1L));
+		assertThat(updatedMember.getFirstName().equals("Tom"));
+		assertThat(updatedMember.getLastName().equals("Jones"));
+		assertThat(updatedMember.getDateOfBirth().equals(dob));
+		assertThat(updatedMember.getPostalCode().equals("NR14 7TP"));
+		assertThat(updatedMember.getPicture().equals(file));
+
+		
 	}
 
 	@Transactional
@@ -165,7 +178,9 @@ public class MemberControllerTest {
 	public void getMemberTest() throws Exception {
 		String sDate = "1973-09-21";
 		Date dob = formatter.parse(sDate);
-		Member member = new Member("Timmy", "Jenkins", dob, "SA14 9AS");
+		File file = File.createTempFile( "image", ".jpg");
+
+		Member member = new Member("Timmy", "Jenkins", dob, "SA14 9AS",file);
 		memberService.createMember(member);
 
 		mvc.perform(get("/members/{id}", 1).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
@@ -173,7 +188,9 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Timmy"))
 				.andExpect(MockMvcResultMatchers.jsonPath("lastName").value("Jenkins"))
 				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1973-09-21"))
-				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("SA14 9AS"));
+				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("SA14 9AS"))
+				.andExpect(MockMvcResultMatchers.jsonPath("picture").value(file.toString()));
+
 
 		assertTrue(memberService.getMember(1L) == member);
 	}
@@ -189,9 +206,15 @@ public class MemberControllerTest {
 		Date dob2 = formatter.parse(sDate2);
 		Date dob3 = formatter.parse(sDate3);
 
-		Member member1 = new Member("Timmy", "Jenkins", dob1, "SA14 9AS");
-		Member member2 = new Member("John", "Cena", dob2, "WA3 8BJ");
-		Member member3 = new Member("Jenny", "Mann", dob3, "IP1 9XJ");
+
+		File file1 = File.createTempFile("test1", ".jpg");
+		File file2 = File.createTempFile( "test2", ".jpg");
+		File file3 = File.createTempFile( "test3", ".jpg");
+
+
+		Member member1 = new Member("Timmy", "Jenkins", dob1, "SA14 9AS",file1);
+		Member member2 = new Member("John", "Cena", dob2, "WA3 8BJ",file2);
+		Member member3 = new Member("Jenny", "Mann", dob3, "IP1 9XJ",file3);
 
 		memberService.createMember(member1);
 		memberService.createMember(member2);
@@ -203,18 +226,24 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].lastName").value("Jenkins"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].dateOfBirth").value("1973-09-21"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].postalCode").value("SA14 9AS"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].picture").value(file1.toString()))
+
 
 				.andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[1].firstName").value("John"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[1].lastName").value("Cena"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[1].dateOfBirth").value("1963-11-02"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[1].postalCode").value("WA3 8BJ"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[1].picture").value(file2.toString()))
 
+				
 				.andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[2].firstName").value("Jenny"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[2].lastName").value("Mann"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[2].dateOfBirth").value("1995-01-27"))
-				.andExpect(MockMvcResultMatchers.jsonPath("$[2].postalCode").value("IP1 9XJ"));
+				.andExpect(MockMvcResultMatchers.jsonPath("$[2].postalCode").value("IP1 9XJ"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[2].picture").value(file3.toString()));
+
 
 		assertTrue(memberService.getAllMembers().size() == 3);
 	}
@@ -224,7 +253,9 @@ public class MemberControllerTest {
 	public void deleteMemberTest() throws Exception {
 		String sDate = "1957-12-25";
 		Date dob = formatter.parse(sDate);
-		Member member = new Member("James", "Roberts", dob, "NR14 7TP");
+		File file= File.createTempFile( "image", ".jpg");
+
+		Member member = new Member("James", "Roberts", dob, "NR14 7TP",file);
 		memberService.createMember(member);
 
 		mvc.perform(delete("/members/{id}", 1).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
