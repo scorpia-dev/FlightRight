@@ -16,8 +16,7 @@ public class FileValidator implements ConstraintValidator<FileValidatorConstrain
 	public boolean isValid(File file, ConstraintValidatorContext context) {
 
 		if (file == null) {
-			// the @NotNull annotation in the Member class protects us from null value
-			// problems
+			// the @NotNull annotation in the Member class protects us from null value problems
 			return true;
 		}
 
