@@ -6,7 +6,7 @@ This is a "Member" RESTful Web Service with Spring/Spring Boot/Hibernate H2 in m
 
 ### You can
 
-* Create a new member
+* **Create a new member**
  
 ```
 POST - http://localhost:8080/members
@@ -21,11 +21,11 @@ POST - http://localhost:8080/members
 }
 ```
 
-* Read an existing member
+* **Read an existing member**
 ```
 *GET - http://localhost:8080/members/{memberid} i.e.  http://localhost:8080/members/1
  ```
-* Update an existing member
+* **Update an existing member**
 ```
 PUT - http://localhost:8080/members/{memberid}
 ```
@@ -38,12 +38,12 @@ PUT - http://localhost:8080/members/{memberid}
     "picture": "image.png/jpg/jpeg/"
 }
 ```
-* Delete members which are no longer used
+* **Delete members which are no longer used**
 ```
 *DELETE - http://localhost:8080/members/{memberid} i.e.  http://localhost:8080/members/1
 ```
 
-* List existing members
+* **List existing members**
 ```
 *GET - http://localhost:8080/members
 ```
