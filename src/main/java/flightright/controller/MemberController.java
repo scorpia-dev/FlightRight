@@ -25,14 +25,15 @@ public class MemberController implements OnCreate {
 	@Autowired
 	MemberService memberService;
 
+	@Override
 	@PostMapping("/members")
-	public Member createMember(@Validated({ OnCreate.class }) @RequestBody  Member member) {
+	public Member createMember(@Validated({ OnCreate.class }) @RequestBody Member member) {
 		return memberService.createMember(member);
 	}
 
-	@PutMapping("/members/{id}")
-	public Member updateMember(@PathVariable @Positive Long id, @RequestBody @Valid Member member) {
-		return memberService.updateMember(member, id);
+	@DeleteMapping("/members/{id}")
+	public String deleteMember(@PathVariable @Positive Long id) {
+		return memberService.deleteMember(id);
 	}
 
 	@GetMapping("/members/{id}")
@@ -45,9 +46,9 @@ public class MemberController implements OnCreate {
 		return memberService.getAllMembers();
 	}
 
-	@DeleteMapping("/members/{id}")
-	public String deleteMember(@PathVariable @Positive Long id) {
-		return memberService.deleteMember(id);
+	@PutMapping("/members/{id}")
+	public Member updateMember(@PathVariable @Positive Long id, @RequestBody @Valid Member member) {
+		return memberService.updateMember(member, id);
 	}
 
 }

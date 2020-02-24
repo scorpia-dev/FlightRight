@@ -53,7 +53,7 @@ public class Member {
 	@Pattern(regexp = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$", message = "Invalid UK post code")
 	@NotEmpty(groups = OnCreate.class, message = "{postalCode.notEmpty}")
 	private String postalCode;
-	
+
 	@NotNull(groups = OnCreate.class, message = "{picture.notEmpty}")
 	@FileValidatorConstraint
 	private File picture;

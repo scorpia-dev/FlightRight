@@ -19,6 +19,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class RestExceptionHandler {
 
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	ResponseEntity<?> handleBadRequest(HttpMessageNotReadableException e) {
+		return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
@@ -30,17 +36,14 @@ public class RestExceptionHandler {
 		return new ResponseEntity<>("not valid due to validation error: " + errors, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(EntityNotFoundException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	ResponseEntity<?> handleNotFoundException(EntityNotFoundException e) {
-		return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(),
-				HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
-	@ExceptionHandler(HttpMessageNotReadableException.class)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	ResponseEntity<?> handleBadRequest(HttpMessageNotReadableException e) {
-		return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+	ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+		final StringBuffer errors = new StringBuffer();
+		for (final FieldError error : e.getBindingResult().getFieldErrors()) {
+			errors.append(error.getField() + ": " + error.getDefaultMessage());
+		}
+		return new ResponseEntity<>("not valid due to validation error: " + errors.toString(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -50,14 +53,11 @@ public class RestExceptionHandler {
 		return new ResponseEntity<>("not valid due to validation error: " + error, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-		final StringBuffer errors = new StringBuffer();
-		for (final FieldError error : e.getBindingResult().getFieldErrors()) {
-			errors.append(error.getField() + ": " + error.getDefaultMessage());
-		}
-		return new ResponseEntity<>("not valid due to validation error: " + errors.toString(), HttpStatus.BAD_REQUEST);
+	@ExceptionHandler(EntityNotFoundException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	ResponseEntity<?> handleNotFoundException(EntityNotFoundException e) {
+		return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(),
+				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

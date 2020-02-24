@@ -25,6 +25,12 @@ public class MemberService {
 		return memberRepository.save(member);
 	}
 
+	public String deleteMember(Long id) {
+		memberRepository.delete(memberRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found")));
+		return "Member with id " + id + " deleted";
+	}
+
 	public List<Member> getAllMembers() {
 		return memberRepository.findAll();
 	}
@@ -32,14 +38,6 @@ public class MemberService {
 	public Member getMember(Long id) {
 		return memberRepository.findById(id).orElseThrow(
 				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found"));
-	}
-
-	public Member updateMember(Member updatedMember, Long id) {
-		Member originalMember = memberRepository.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found"));
-
-		BeanUtils.copyProperties(updatedMember, originalMember, getNullPropertyNames(updatedMember));
-		return memberRepository.save(originalMember);
 	}
 
 	private String[] getNullPropertyNames(Object source) {
@@ -56,9 +54,11 @@ public class MemberService {
 		return emptyNames.toArray(result);
 	}
 
-	public String deleteMember(Long id) {
-		memberRepository.delete(memberRepository.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found")));
-		return "Member with id " + id + " deleted";
+	public Member updateMember(Member updatedMember, Long id) {
+		Member originalMember = memberRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("the member with id " + id.toString() + " was not found"));
+
+		BeanUtils.copyProperties(updatedMember, originalMember, getNullPropertyNames(updatedMember));
+		return memberRepository.save(originalMember);
 	}
 }

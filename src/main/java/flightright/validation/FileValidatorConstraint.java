@@ -14,9 +14,9 @@ import javax.validation.Payload;
 @Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FileValidatorConstraint {
-	String message() default "Invalid image file type";
-
 	Class<?>[] groups() default {};
+
+	String message() default "Invalid image file type";
 
 	Class<? extends Payload>[] payload() default {};
 }
