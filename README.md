@@ -23,7 +23,7 @@ POST - http://localhost:8080/members
 
 * **Read an existing member**
 ```
-*GET - http://localhost:8080/members/{memberid} i.e.  http://localhost:8080/members/1
+GET - http://localhost:8080/members/{memberid} i.e.  http://localhost:8080/members/1
  ```
 * **Update an existing member**
 ```
@@ -40,12 +40,12 @@ PUT - http://localhost:8080/members/{memberid}
 ```
 * **Delete members which are no longer used**
 ```
-*DELETE - http://localhost:8080/members/{memberid} i.e.  http://localhost:8080/members/1
+DELETE - http://localhost:8080/members/{memberid} i.e.  http://localhost:8080/members/1
 ```
 
 * **List existing members**
 ```
-*GET - http://localhost:8080/members
+GET - http://localhost:8080/members
 ```
 
 ### Spec -
