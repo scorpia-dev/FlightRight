@@ -32,7 +32,7 @@ PUT - http://localhost:8080/members/{memberid}
 ```JSON
 {
     "firstName": "<first name here>",
-    "lastName": "last name here",
+    "lastName": "<last name here>",
     "dateOfBirth": "yyyy-mm-dd",
     "postalCode": "SO17 1BJ",
     "picture": "image.png/jpg/jpeg/"
@@ -58,5 +58,9 @@ GET - http://localhost:8080/members
 
 ### Running -
 Run as a Spring Boot App
+
+### To do's -
+* Finer grained post code validation (worldwide applicable, not just aimed at UK)
+
 
 
