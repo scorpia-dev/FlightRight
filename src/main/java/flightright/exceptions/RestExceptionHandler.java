@@ -57,7 +57,10 @@ public class RestExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	ResponseEntity<?> handleNotFoundException(EntityNotFoundException e) {
 		return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				HttpStatus.NOT_FOUND);
 	}
+	
+	
+
 
 }

@@ -164,7 +164,7 @@ public class MemberControllerValidationTest {
 	@Test
 	public void getMemberIdDoesNotExist() throws Exception {
 		mvc.perform(get("/members/{id}", 3L).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isInternalServerError()).andDo(print()).andExpect(content().string(
+				.andExpect(status().isNotFound()).andDo(print()).andExpect(content().string(
 						containsString("not valid due to validation error: the member with id 3 was not found")));
 	}
 
