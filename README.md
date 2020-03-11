@@ -56,10 +56,10 @@ GET - http://localhost:8080/members
 * Data storage: (in memory) database
 * Lombok has been used to reduce boilerplate code
 
-### Running -
+### Running
 Run as a Spring Boot App
 
-### To do's -
+### To do's
 * Finer grained post code validation (worldwide applicable, not just aimed at UK)
 
 
