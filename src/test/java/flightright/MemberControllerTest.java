@@ -247,7 +247,7 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("id").value(1))
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Tom"))
 				.andExpect(MockMvcResultMatchers.jsonPath("lastName").value("Jones"))
-				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1963-11-02"))
+				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1993-09-21"))
 				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR1 1BD"))
 				.andExpect(MockMvcResultMatchers.jsonPath("picture").value(org.hamcrest.Matchers.containsString(".png")));
 
