@@ -35,12 +35,12 @@ public class Member {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Pattern(regexp = "[a-zA-Z]+", message = "a name can only contain letters")
+	@Pattern(regexp = "^[\\p{L} .'-]+$", message = "a name can only contain letters")
 	@Size(min = 1, max = 30)
 	@NotEmpty(groups = OnCreate.class, message = "{firstName.notEmpty}")
 	private String firstName;
 
-	@Pattern(regexp = "[a-zA-Z]+", message = "a name can only contain letters")
+	@Pattern(regexp = "^[\\p{L} .'-]+$", message = "a name can only contain letters")
 	@Size(min = 1, max = 30)
 	@NotEmpty(groups = OnCreate.class, message = "{lastName.notEmpty}")
 	private String lastName;

@@ -13,14 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -84,19 +81,6 @@ public class MemberControllerTest {
 		member = new Member("Nick", "Prendergast", dob, "NR14 7TP", file);
 		member2 = new Member("John", "Cena", dob2, "WA3 8BJ", file2);
 		member3 = new Member("Jenny", "Mann", dob3, "IP1 9XJ", file3);
-
-		/*
-		 * drivingLog=new DrivingLog(); duration1 = new Duration(1, 30, 45); duration2 =
-		 * new Duration(2, 50, 12);
-		 * 
-		 * drivingRecord1 = new DrivingRecord(230.0, duration1, "This was a long trip");
-		 * drivingRecord2 = new DrivingRecord(300.0, duration2,
-		 * "This trip is even longer.");
-		 * 
-		 * drivingLog.addDrivingRecord(drivingRecord1);
-		 * drivingLog.addDrivingRecord(drivingRecord2);
-		 */
-
 	}
 
 	@Transactional
@@ -210,10 +194,9 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Tom"))
 				.andExpect(MockMvcResultMatchers.jsonPath("lastName").value("Prendergast"))
 				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1993-09-21"))
-				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR14 7TP"))
-				.andExpect(MockMvcResultMatchers.jsonPath("picture")
-						.value(org.hamcrest.Matchers.containsString(".jpg")));
-		
+				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR14 7TP")).andExpect(
+						MockMvcResultMatchers.jsonPath("picture").value(org.hamcrest.Matchers.containsString(".jpg")));
+
 		Member updatedMember = memberService.getMember(1L);
 		assertThat(updatedMember.getId().equals(1L));
 		assertThat(updatedMember.getFirstName().equals("Tom"));
@@ -248,8 +231,8 @@ public class MemberControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("firstName").value("Tom"))
 				.andExpect(MockMvcResultMatchers.jsonPath("lastName").value("Jones"))
 				.andExpect(MockMvcResultMatchers.jsonPath("dateOfBirth").value("1993-09-21"))
-				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR1 1BD"))
-				.andExpect(MockMvcResultMatchers.jsonPath("picture").value(org.hamcrest.Matchers.containsString(".png")));
+				.andExpect(MockMvcResultMatchers.jsonPath("postalCode").value("NR1 1BD")).andExpect(
+						MockMvcResultMatchers.jsonPath("picture").value(org.hamcrest.Matchers.containsString(".png")));
 
 		Member afterSaveUpdatedMember = memberService.getMember(1L);
 		assertThat(afterSaveUpdatedMember.getId().equals(id));

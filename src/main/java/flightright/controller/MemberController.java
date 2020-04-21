@@ -48,9 +48,9 @@ public class MemberController implements OnCreate {
 		return memberService.getAllMembers();
 	}
 
-	@PutMapping("/{id}")
-	public Member updateMember(@PathVariable @Positive Long id, @RequestBody @Valid Member member) {
-		return memberService.updateMember(member, id);
-	}
+		@PutMapping("/{id}")
+		public Member updateMember(@PathVariable @Positive Long id, @RequestBody @Valid Member member) {
+			return memberService.updateMember(member, id);
+		}
 
 }
