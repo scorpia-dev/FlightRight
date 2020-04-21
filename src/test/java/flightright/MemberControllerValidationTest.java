@@ -142,7 +142,7 @@ public class MemberControllerValidationTest {
 	@Test
 	public void deleteMemberIdDoesNotExistTest() throws Exception {
 		mvc.perform(delete("/members/{id}", 3L).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound()()).andDo(print()).andExpect(content().string(
+				.andExpect(status().isNotFound()).andDo(print()).andExpect(content().string(
 						containsString("not valid due to validation error: the member with id 3 was not found")));
 	}
 
