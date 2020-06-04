@@ -1,4 +1,4 @@
-# FlightRight
+# Member Rest Service
 
 ## About App
 
